@@ -1,0 +1,48 @@
+% Declaramos un predicado dinámico para almacenar respuestas
+:- dynamic respuesta/2.
+
+% Base de conocimientos: personajes y sus características
+personaje(mario, [bigote, gorra, fontanero, rojo, italiano]).
+personaje(luigi, [bigote, gorra, hermano, verde, italiano]).
+personaje(peach, [princesa, corona, vestido, rosa, humana]).
+personaje(bowser, [villano, caparazon, fuego, dragon, verde]).
+personaje(link, [espada, escudo, heroe, rubio, elfo]).
+personaje(zelda, [princesa, sabiduria, corona, rubia, elfa]).
+personaje(pikachu, [electricidad, amarillo, raton, adorable, pokemon]).
+personaje(charizard, [fuego, dragon, alas, naranja, pokemon]).
+personaje(kirby, [rosado, tragador, esponjoso, adorable, desconocido]).
+personaje(samus, [armadura, cazador, heroina, naranja, humana]).
+
+% Regla para verificar características
+verifica(Pregunta, Caracteristica) :-
+    ( respuesta(Caracteristica, Respuesta) ->
+        Respuesta == s
+    ; write(Pregunta), nl,
+      read(Respuesta),
+      assertz(respuesta(Caracteristica, Respuesta)),
+      Respuesta == s
+    ).
+
+% Regla principal para iniciar el juego
+akinator :-
+    retractall(respuesta(_, _)), % Limpia respuestas anteriores
+    write('¡Adivinaré en qué personaje estás pensando con solo preguntas de sí o no!'), nl,
+    ( adivina_personaje(Personaje) ->
+        format('¡Es ~w!', [Personaje])
+    ; write('No pude adivinar.')
+    ).
+
+% Reglas para adivinar
+adivina_personaje(Personaje) :-
+    personaje(Personaje, Caracteristicas),
+    cumple_todas(Caracteristicas).
+
+% Comprueba si todas las características se cumplen
+cumple_todas([]).
+cumple_todas([Caracteristica | Resto]) :-
+    verifica_caracteristica(Caracteristica),
+    cumple_todas(Resto).
+
+% Verifica una característica específica
+verifica_caracteristica(Caracteristica) :-
+    verifica(format('¿Tiene la característica ~w? (s/n)', [Caracteristica]), Caracteristica).
