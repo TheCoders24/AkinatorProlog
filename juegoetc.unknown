@@ -28,7 +28,7 @@ akinator :-
     retractall(respuesta(_, _)), % Limpia respuestas anteriores
     write('¡Adivinaré en qué personaje estás pensando con solo preguntas de sí o no!'), nl,
     ( adivina_personaje(Personaje) ->
-        format('¡Es ', [Personaje])
+        format('¡Es ~w!', [Personaje])
     ; write('No pude adivinar.')
     ).
 
@@ -45,4 +45,4 @@ cumple_todas([Caracteristica | Resto]) :-
 
 % Verifica una característica específica
 verifica_caracteristica(Caracteristica) :-
-    verifica(format('¿Tiene la característica ? (s/n)', [Caracteristica]), Caracteristica).
+    verifica(format('¿Tiene la característica ~w? (s/n)', [Caracteristica]), Caracteristica).
